@@ -152,3 +152,15 @@ example A800
 nvidia-smi topo -m 
 ```
 ![topo](A800-topo.jpeg)
+
+### Check lstopo (PCIe topo) 
+apt install -y hwloc 
+
+lstopo --output-format svg > /opt/$(hostname)-pci.svg
+
+Healthy lstopo topology
+![topo](PCIe-topo.svg)
+
+#### PCIe Link Width
+For example,the PCIe link width is expected to be 32, but some links are shown as 3.9.
+![topo](abnormal_link_status.jpg)
