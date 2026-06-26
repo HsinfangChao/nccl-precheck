@@ -164,3 +164,32 @@ Healthy lstopo topology
 #### PCIe Link Width
 For example,the PCIe link width is expected to be 32, but some links are shown as 3.9.
 ![topo](abnormal_link_status.jpg)
+
+### Check MTU (Maximum Transmission Unit) 
+In a RoCE (RDMA over Converged Ethernet) environment, the MTU (Maximum Transmission Unit) setting on InfiniBand (IB) NICs significantly affects NCCL communication performance. It is not an optional parameter but a core factor that determines network throughput. If configured incorrectly, NCCL performance can be severely limited even if everything else works fine.
+
+#### How to Set MTU Correctly
+To achieve the best performance, follow these core principles and steps:
+
+Uniformity Across the Entire Path: Every device along the network path – server NICs, switch ports, etc. – must have the same MTU value. This is the most basic requirement.
+
+Recommended Value: 9000: In RoCE networks, 9000 is the de facto standard MTU value for jumbo frames.
+
+Check the Current MTU: On each training node, run the following command to confirm the current MTU setting.
+
+```shell
+ip link show <your_IB_interface_name> | grep mtu
+```
+or directly check the system file
+
+```shell
+cat /sys/class/net/<your_IB_interface_name>/mtu
+Expected output: For high‑performance RoCE networks, it should show mtu 9000.
+```
+Change MTU:
+
+If the current value is not 9000, you can change it temporarily with the following command (the change will be lost after a network restart or system reboot).
+
+```shell
+sudo ip link set dev <your_IB_interface_name> mtu 9000
+```
